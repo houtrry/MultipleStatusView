@@ -1,5 +1,5 @@
 # MultipleStatusView
-Android page多状态切换
+Android page多状态(数据页/未登录页/错误页/空数据页/loading页)切换
 
 已支持 ConstraintLayout/FrameLayout/LinearLayout/RelativeLayout四中常用ViewGroup.
 
