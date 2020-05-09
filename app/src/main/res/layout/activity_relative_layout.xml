@@ -2,20 +2,24 @@
 <com.github.multiplestatusview.MultipleStatusRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    app:errorLayout="@layout/layout_error"
+    app:emptyLayout="@layout/layout_empty"
+    app:notLoginLayout="@layout/layout_not_login"
+    app:loadingLayout="@layout/layout_loading"
     android:id="@+id/multipleStatusView"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RelativeLayoutActivity">
 
     <TextView
+        android:id="@+id/tvData"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
         android:gravity="center"
+        android:text="relative layout"
         android:textAllCaps="false"
         android:textColor="@color/colorAccent"
-        android:textSize="25sp"
-        android:id="@+id/tvData"
-        android:text="relative layout"
-        android:background="@color/colorPrimary"
-        android:layout_height="match_parent"/>
+        android:textSize="25sp" />
 
 </com.github.multiplestatusview.MultipleStatusRelativeLayout>
