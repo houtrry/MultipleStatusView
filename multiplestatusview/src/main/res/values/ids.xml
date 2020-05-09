@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="error_layout" type="id"/>
+    <item name="data_layout" type="id"/>
+    <item name="empty_layout" type="id"/>
+    <item name="not_login_layout" type="id"/>
+</resources>
