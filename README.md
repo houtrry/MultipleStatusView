@@ -34,3 +34,12 @@ Android page多状态(数据页/未登录页/错误页/空数据页/loading页)�
 ```
 multipleStatusView.showLoadingView(true)
 ```
+下面是 错误页/空数据页/未登录页/loading页的默认页面, 重写覆盖即可
+layout/layout_error
+layout/layout_empty
+layout/layout_not_login
+layout/layout_loading
+
+实现逻辑:
+只是对ConstraintLayout/FrameLayout/LinearLayout/RelativeLayout做功能增强, 并不影响ConstraintLayout/FrameLayout/LinearLayout/RelativeLayout的原有逻辑.
+而且, 默认情况下, 不展示就不添加错误页/空数据页/未登录页/loading页, 不会影响Activity的启动性能
