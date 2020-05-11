@@ -72,6 +72,16 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
     }
 
     @Override
+    public void setOnErrorViewClickListener(@NonNull View.OnClickListener listener, int... viewIds) {
+        if (mErrorView == null) {
+            return;
+        }
+        for (int viewId : viewIds) {
+            mErrorView.findViewById(viewId).setOnClickListener(listener);
+        }
+    }
+
+    @Override
     public void setOnEmptyViewClickListener(int viewId, @NonNull View.OnClickListener listener) {
         if (mEmptyView != null) {
             mEmptyView.findViewById(viewId).setOnClickListener(listener);
@@ -79,8 +89,28 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
     }
 
     @Override
+    public void setOnEmptyViewClickListener(@NonNull View.OnClickListener listener, int... viewIds) {
+        if (mEmptyView == null) {
+            return;
+        }
+        for (int viewId : viewIds) {
+            mEmptyView.findViewById(viewId).setOnClickListener(listener);
+        }
+    }
+
+    @Override
     public void setOnNotLoginViewClickListener(int viewId, @NonNull View.OnClickListener listener) {
         if (mNotLoginView != null) {
+            mNotLoginView.findViewById(viewId).setOnClickListener(listener);
+        }
+    }
+
+    @Override
+    public void setOnNotLoginViewClickListener(@NonNull View.OnClickListener listener, int... viewIds) {
+        if (mNotLoginView == null) {
+            return;
+        }
+        for (int viewId : viewIds) {
             mNotLoginView.findViewById(viewId).setOnClickListener(listener);
         }
     }
@@ -178,7 +208,7 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
             tag = child.getTag();
             isOtherChild = (tag instanceof String) && Pattern.matches(TAG_PATTERN, (String) tag);
             System.out.println(":::tag->" + tag + ", isOtherChild: " + isOtherChild);
-            System.out.println(":::tag->" + tag + ", result-> " +  isOtherChild + " ^ " + show +" = "+(isOtherChild ^ show));
+            System.out.println(":::tag->" + tag + ", result-> " + isOtherChild + " ^ " + show + " = " + (isOtherChild ^ show));
             child.setVisibility(show == isOtherChild ? View.GONE : View.VISIBLE);
         }
     }

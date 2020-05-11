@@ -98,6 +98,13 @@ public class MultipleStatusRelativeLayout extends RelativeLayout implements OnGe
     }
 
     @Override
+    public void setOnErrorViewClickListener(@NonNull OnClickListener listener, int... viewIds) {
+        if (mMultipleStatusDelegate != null) {
+            mMultipleStatusDelegate.setOnErrorViewClickListener(listener, viewIds);
+        }
+    }
+
+    @Override
     public void setOnEmptyViewClickListener (int viewId, @NonNull View.OnClickListener listener) {
         if (mMultipleStatusDelegate != null) {
             mMultipleStatusDelegate.setOnEmptyViewClickListener(viewId, listener);
@@ -105,9 +112,23 @@ public class MultipleStatusRelativeLayout extends RelativeLayout implements OnGe
     }
 
     @Override
+    public void setOnEmptyViewClickListener(@NonNull OnClickListener listener, int... viewIds) {
+        if (mMultipleStatusDelegate != null) {
+            mMultipleStatusDelegate.setOnEmptyViewClickListener(listener, viewIds);
+        }
+    }
+
+    @Override
     public void setOnNotLoginViewClickListener (int viewId, @NonNull View.OnClickListener listener) {
         if (mMultipleStatusDelegate != null) {
             mMultipleStatusDelegate.setOnNotLoginViewClickListener(viewId, listener);
+        }
+    }
+
+    @Override
+    public void setOnNotLoginViewClickListener(@NonNull OnClickListener listener, int... viewIds) {
+        if (mMultipleStatusDelegate != null) {
+            mMultipleStatusDelegate.setOnNotLoginViewClickListener(listener, viewIds);
         }
     }
 }

@@ -52,6 +52,14 @@ public interface IMultipleStatusView {
     void setOnErrorViewClickListener(int viewId, @NonNull View.OnClickListener listener);
 
     /**
+     * 设置错误页面的点击事件
+     *
+     * @param listener
+     * @param viewIds  接收点击事件的View id
+     */
+    void setOnErrorViewClickListener(@NonNull View.OnClickListener listener, int... viewIds);
+
+    /**
      * 设置空数据页面的点击事件
      *
      * @param viewId   接收点击事件的View id
@@ -60,10 +68,28 @@ public interface IMultipleStatusView {
     void setOnEmptyViewClickListener(int viewId, @NonNull View.OnClickListener listener);
 
     /**
+     * 设置空数据页面的点击事件
+     *
+     * @param listener
+     * @param viewIds  接收点击事件的View id
+     */
+    void setOnEmptyViewClickListener(@NonNull View.OnClickListener listener, int... viewIds);
+
+
+    /**
      * 设置未登录页面的点击事件
      *
      * @param viewId   接收点击事件的View id
      * @param listener
      */
     void setOnNotLoginViewClickListener(int viewId, @NonNull View.OnClickListener listener);
+
+    /**
+     * 设置未登录页面的点击事件
+     *
+     * @param listener
+     * @param viewIds  接收点击事件的View id
+     */
+    void setOnNotLoginViewClickListener(@NonNull View.OnClickListener listener, int... viewIds);
+
 }

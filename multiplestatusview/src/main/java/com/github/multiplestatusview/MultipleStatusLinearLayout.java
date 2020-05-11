@@ -92,23 +92,44 @@ public class MultipleStatusLinearLayout extends LinearLayout implements OnGenera
     }
 
     @Override
-    public void setOnErrorViewClickListener(int viewId, @NonNull OnClickListener listener) {
+    public void setOnErrorViewClickListener (int viewId, @NonNull OnClickListener listener) {
         if (mMultipleStatusDelegate != null) {
             mMultipleStatusDelegate.setOnErrorViewClickListener(viewId, listener);
         }
     }
 
     @Override
-    public void setOnEmptyViewClickListener(int viewId, @NonNull OnClickListener listener) {
+    public void setOnErrorViewClickListener(@NonNull OnClickListener listener, int... viewIds) {
+        if (mMultipleStatusDelegate != null) {
+            mMultipleStatusDelegate.setOnErrorViewClickListener(listener, viewIds);
+        }
+    }
+
+    @Override
+    public void setOnEmptyViewClickListener (int viewId, @NonNull View.OnClickListener listener) {
         if (mMultipleStatusDelegate != null) {
             mMultipleStatusDelegate.setOnEmptyViewClickListener(viewId, listener);
         }
     }
 
     @Override
-    public void setOnNotLoginViewClickListener(int viewId, @NonNull OnClickListener listener) {
+    public void setOnEmptyViewClickListener(@NonNull OnClickListener listener, int... viewIds) {
+        if (mMultipleStatusDelegate != null) {
+            mMultipleStatusDelegate.setOnEmptyViewClickListener(listener, viewIds);
+        }
+    }
+
+    @Override
+    public void setOnNotLoginViewClickListener (int viewId, @NonNull View.OnClickListener listener) {
         if (mMultipleStatusDelegate != null) {
             mMultipleStatusDelegate.setOnNotLoginViewClickListener(viewId, listener);
+        }
+    }
+
+    @Override
+    public void setOnNotLoginViewClickListener(@NonNull OnClickListener listener, int... viewIds) {
+        if (mMultipleStatusDelegate != null) {
+            mMultipleStatusDelegate.setOnNotLoginViewClickListener(listener, viewIds);
         }
     }
 }
