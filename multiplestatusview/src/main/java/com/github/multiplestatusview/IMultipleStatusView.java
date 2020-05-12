@@ -113,6 +113,7 @@ public interface IMultipleStatusView {
     /**
      * 添加自定义类型的页面.
      * 默认隐藏数据页.
+     * 只添加, 不显示.
      * 注意: type 0~3 分别是错误页/未登录页/空数据页/loading页,
      * 如果type为这几个, 会覆盖默认. 慎用.
      *
@@ -123,6 +124,7 @@ public interface IMultipleStatusView {
 
     /**
      * 添加自定义类型的页面
+     * 只添加, 不显示.
      * 注意: type 0~3 分别是错误页/未登录页/空数据页/loading页,
      * 如果type为这几个, 会覆盖默认. 慎用.
      *
@@ -134,6 +136,7 @@ public interface IMultipleStatusView {
 
     /**
      * 显示对应type的view.
+     * 只显示, 不添加.
      * 注意: 必须先add这种type的View, 也就是先调用addCustomTypeView方法
      *
      * @param type
@@ -141,7 +144,8 @@ public interface IMultipleStatusView {
     void showCustomTypeView(int type);
 
     /**
-     * 同时调用addCustomTypeView和showCustomTypeView
+     * 同时调用addCustomTypeView和showCustomTypeView.
+     * 同时添加显示.
      *
      * @param type
      * @param layoutId
