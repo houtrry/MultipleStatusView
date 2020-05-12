@@ -51,6 +51,7 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
     }
 
     {
+        //把错误页/未登录页/空数据页/loading页作为默认类型添加进去
         addTypeView(ViewType.Error, mErrorViewLayoutId, ViewTag.Error, false);
         addTypeView(ViewType.NotLogin, mNotLoginViewLayoutId, ViewTag.NotLogin, false);
         addTypeView(ViewType.Empty, mEmptyViewLayoutId, ViewTag.Empty, false);
@@ -147,7 +148,7 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
 
     @Override
     public void showNotLoginView() {
-       showTypeView(ViewType.NotLogin);
+        showTypeView(ViewType.NotLogin);
     }
 
     private void displayDataView(boolean show) {
@@ -186,6 +187,7 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
     }
 
     private void addTypeView(int type, int layoutId, String viewTag, boolean remainDataView) {
+        //如果之前已经添加过这种type的view, 则先移除
         final MultipleStatusBean cacheMultipleStatusBean = mMultipleStatusMap.get(type);
         if (cacheMultipleStatusBean != null) {
             final View view = cacheMultipleStatusBean.getView();
@@ -193,6 +195,7 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
                 mRootView.removeView(view);
             }
         }
+        //再覆盖
         final MultipleStatusBean multipleStatusBean = new MultipleStatusBean();
         multipleStatusBean.setType(type);
         multipleStatusBean.setLayoutId(layoutId);
@@ -241,17 +244,19 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
         if (!remainDataView) {
             displayDataView(false);
         }
+        MultipleStatusBean multipleStatusBean;
+        View view;
         for (int i = 0; i < mMultipleStatusMap.size(); i++) {
-            MultipleStatusBean multipleStatusBean = mMultipleStatusMap.valueAt(i);
+            multipleStatusBean = mMultipleStatusMap.valueAt(i);
             if (multipleStatusBean == null) {
                 continue;
             }
-            System.out.println("===>>>hideTypeViews, multipleStatusBean: "+multipleStatusBean);
-            View view = multipleStatusBean.getView();
+            System.out.println("===>>>hideTypeViews, multipleStatusBean: " + multipleStatusBean);
+            view = multipleStatusBean.getView();
             if (view == null) {
                 continue;
             }
-            System.out.println("===>>>hideTypeViews, view: "+view);
+            System.out.println("===>>>hideTypeViews, view: " + view);
             view.setVisibility(View.GONE);
         }
     }
@@ -259,6 +264,6 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
     @Override
     public View getTypeView(int type) {
         final MultipleStatusBean multipleStatusBean = mMultipleStatusMap.get(type);
-        return multipleStatusBean == null? null:multipleStatusBean.getView();
+        return multipleStatusBean == null ? null : multipleStatusBean.getView();
     }
 }
