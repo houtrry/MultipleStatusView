@@ -11,7 +11,8 @@ class RelativeLayoutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_relative_layout)
         tvData.setOnClickListener {
-            multipleStatusView.showLoadingView(true)
+            multipleStatusView.showLoadingView(false)
+            multipleStatusView.addCustomTypeView(5, R.layout.layout_custom_type, false);
             val handle = Handler()
             handle.postDelayed({
                 multipleStatusView.showNotLoginView()
@@ -23,8 +24,11 @@ class RelativeLayoutActivity : AppCompatActivity() {
                 multipleStatusView.showErrorView()
             }, 5000)
             handle.postDelayed({
-                multipleStatusView.showDataView()
+                multipleStatusView.showCustomTypeView(5)
             }, 7000)
+            handle.postDelayed({
+                multipleStatusView.showDataView()
+            }, 9000)
         }
     }
 }

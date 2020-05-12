@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,17 +28,18 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
     private int mLoadingViewLayoutId = R.layout.layout_loading;
     private int mTopGap = 0;
     private ViewGroup mRootView;
-    private View mErrorView;
-    private View mNotLoginView;
-    private View mEmptyView;
-    private View mLoadingView;
+    private static final String TAG_PATTERN = "MultipleStatusDelegate.*";
+
+    private SparseArray<MultipleStatusBean> mMultipleStatusMap = new SparseArray<>();
 
     private interface ViewTag {
-        String Error = "MultipleStatusDelegate$Error";
-        String NotLogin = "MultipleStatusDelegate$NotLogin";
-        String Empty = "MultipleStatusDelegate$Empty";
-        String Loading = "MultipleStatusDelegate$Loading";
+        String Error = "MultipleStatusDelegate&&&Error";
+        String NotLogin = "MultipleStatusDelegate&&&NotLogin";
+        String Empty = "MultipleStatusDelegate&&&Empty";
+        String Loading = "MultipleStatusDelegate&&&Loading";
+        String Other = "MultipleStatusDelegate&&&Other";
     }
+
 
     public MultipleStatusDelegate() {
     }
@@ -46,6 +48,13 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
         this.mContext = context;
         this.mRootView = rootView;
         initAttrs(attrs);
+    }
+
+    {
+        addTypeView(ViewType.Error, mErrorViewLayoutId, ViewTag.Error, false);
+        addTypeView(ViewType.NotLogin, mNotLoginViewLayoutId, ViewTag.NotLogin, false);
+        addTypeView(ViewType.Empty, mEmptyViewLayoutId, ViewTag.Empty, false);
+        addTypeView(ViewType.Loading, mLoadingViewLayoutId, ViewTag.Loading, true);
     }
 
     public void setOnGenerateStatusViewCallback(OnGenerateStatusViewCallback mOnGenerateStatusViewCallback) {
@@ -63,55 +72,51 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
         typedArray.recycle();
     }
 
-
     @Override
     public void setOnErrorViewClickListener(int viewId, @NonNull View.OnClickListener listener) {
-        if (mErrorView != null) {
-            mErrorView.findViewById(viewId).setOnClickListener(listener);
-        }
+        setOnTypeViewClickListener(ViewType.Error, listener, viewId);
     }
 
     @Override
     public void setOnErrorViewClickListener(@NonNull View.OnClickListener listener, int... viewIds) {
-        if (mErrorView == null) {
-            return;
-        }
-        for (int viewId : viewIds) {
-            mErrorView.findViewById(viewId).setOnClickListener(listener);
-        }
+        setOnTypeViewClickListener(ViewType.Error, listener, viewIds);
     }
 
     @Override
     public void setOnEmptyViewClickListener(int viewId, @NonNull View.OnClickListener listener) {
-        if (mEmptyView != null) {
-            mEmptyView.findViewById(viewId).setOnClickListener(listener);
-        }
+        setOnTypeViewClickListener(ViewType.Empty, listener, viewId);
     }
 
     @Override
     public void setOnEmptyViewClickListener(@NonNull View.OnClickListener listener, int... viewIds) {
-        if (mEmptyView == null) {
-            return;
-        }
-        for (int viewId : viewIds) {
-            mEmptyView.findViewById(viewId).setOnClickListener(listener);
-        }
+        setOnTypeViewClickListener(ViewType.Empty, listener, viewIds);
     }
 
     @Override
     public void setOnNotLoginViewClickListener(int viewId, @NonNull View.OnClickListener listener) {
-        if (mNotLoginView != null) {
-            mNotLoginView.findViewById(viewId).setOnClickListener(listener);
-        }
+        setOnTypeViewClickListener(ViewType.NotLogin, listener, viewId);
     }
 
     @Override
     public void setOnNotLoginViewClickListener(@NonNull View.OnClickListener listener, int... viewIds) {
-        if (mNotLoginView == null) {
+        setOnTypeViewClickListener(ViewType.NotLogin, listener, viewIds);
+    }
+
+    @Override
+    public void setOnTypeViewClickListener(int type, @NonNull View.OnClickListener listener, int... viewIds) {
+        final MultipleStatusBean multipleStatusBean = mMultipleStatusMap.get(type);
+        if (multipleStatusBean == null) {
             return;
         }
-        for (int viewId : viewIds) {
-            mNotLoginView.findViewById(viewId).setOnClickListener(listener);
+        multipleStatusBean.setClickListener(listener);
+        multipleStatusBean.setClickViewIds(viewIds);
+        View view = multipleStatusBean.getView();
+        if (view != null) {
+            if (!Utils.isEmpty(viewIds)) {
+                for (int i = 0; i < viewIds.length; i++) {
+                    view.findViewById(viewIds[i]).setOnClickListener(listener);
+                }
+            }
         }
     }
 
@@ -127,77 +132,23 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
 
     @Override
     public void showLoadingView(boolean remainDataProgress) {
-        hideViews(!remainDataProgress);
-        if (mLoadingView == null) {
-            if (mOnGenerateStatusViewCallback == null) {
-                throw new NullPointerException("mOnGenerateStatusViewCallback is null");
-            }
-            mLoadingView = mOnGenerateStatusViewCallback.onAddChildView(mLoadingViewLayoutId, mTopGap);
-            mLoadingView.setTag(ViewTag.Loading);
-        }
-        mLoadingView.setVisibility(View.VISIBLE);
+        showTypeView(ViewType.Loading, remainDataProgress);
     }
 
     @Override
     public void showErrorView() {
-        hideViews(true);
-        if (mErrorView == null) {
-            if (mOnGenerateStatusViewCallback == null) {
-                throw new NullPointerException("mOnGenerateStatusViewCallback is null");
-            }
-            mErrorView = mOnGenerateStatusViewCallback.onAddChildView(mErrorViewLayoutId, mTopGap);
-            mErrorView.setTag(ViewTag.Error);
-        }
-        mErrorView.setVisibility(View.VISIBLE);
-        System.out.println(":::" + mErrorView);
-        System.out.println(":::" + mErrorView.getMeasuredWidth() + "-" + mErrorView.getMeasuredHeight());
+        showTypeView(ViewType.Error);
     }
 
     @Override
     public void showEmptyView() {
-        if (mEmptyView == null) {
-            if (mOnGenerateStatusViewCallback == null) {
-                throw new NullPointerException("mOnGenerateStatusViewCallback is null");
-            }
-            mEmptyView = mOnGenerateStatusViewCallback.onAddChildView(mEmptyViewLayoutId, mTopGap);
-            mEmptyView.setTag(ViewTag.Empty);
-        }
-        hideViews(true);
-        mEmptyView.setVisibility(View.VISIBLE);
+        showTypeView(ViewType.Empty);
     }
 
     @Override
     public void showNotLoginView() {
-        hideViews(true);
-        if (mNotLoginView == null) {
-            if (mOnGenerateStatusViewCallback == null) {
-                throw new NullPointerException("mOnGenerateStatusViewCallback is null");
-            }
-            mNotLoginView = mOnGenerateStatusViewCallback.onAddChildView(mNotLoginViewLayoutId, mTopGap);
-            mNotLoginView.setTag(ViewTag.NotLogin);
-        }
-        mNotLoginView.setVisibility(View.VISIBLE);
+       showTypeView(ViewType.NotLogin);
     }
-
-    private void hideViews(boolean hideData) {
-        if (hideData) {
-            displayDataView(false);
-        }
-        if (mEmptyView != null) {
-            mEmptyView.setVisibility(View.GONE);
-        }
-        if (mErrorView != null) {
-            mErrorView.setVisibility(View.GONE);
-        }
-        if (mNotLoginView != null) {
-            mNotLoginView.setVisibility(View.GONE);
-        }
-        if (mLoadingView != null) {
-            mLoadingView.setVisibility(View.GONE);
-        }
-    }
-
-    private static final String TAG_PATTERN = "MultipleStatusDelegate.*";
 
     private void displayDataView(boolean show) {
         boolean isOtherChild;
@@ -213,4 +164,101 @@ public class MultipleStatusDelegate implements IMultipleStatusView {
         }
     }
 
+    @Override
+    public void addCustomTypeView(int type, int layoutId) {
+        addCustomTypeView(type, layoutId, false);
+    }
+
+    @Override
+    public void addCustomTypeView(int type, int layoutId, boolean remainDataView) {
+        addTypeView(type, layoutId, ViewTag.Other, remainDataView);
+    }
+
+    @Override
+    public void showCustomTypeView(int type) {
+        showTypeView(type);
+    }
+
+    @Override
+    public void showWithAddCustomTypeView(int type, int layoutId) {
+        addCustomTypeView(type, layoutId);
+        showCustomTypeView(type);
+    }
+
+    private void addTypeView(int type, int layoutId, String viewTag, boolean remainDataView) {
+        final MultipleStatusBean cacheMultipleStatusBean = mMultipleStatusMap.get(type);
+        if (cacheMultipleStatusBean != null) {
+            final View view = cacheMultipleStatusBean.getView();
+            if (view != null && mRootView != null) {
+                mRootView.removeView(view);
+            }
+        }
+        final MultipleStatusBean multipleStatusBean = new MultipleStatusBean();
+        multipleStatusBean.setType(type);
+        multipleStatusBean.setLayoutId(layoutId);
+        multipleStatusBean.setViewTag(viewTag);
+        multipleStatusBean.setRemainDataView(remainDataView);
+        mMultipleStatusMap.put(type, multipleStatusBean);
+    }
+
+    private void showTypeView(int type) {
+        final MultipleStatusBean multipleStatusBean = mMultipleStatusMap.get(type);
+        if (multipleStatusBean == null) {
+            return;
+        }
+        showTypeViewContent(multipleStatusBean.isRemainDataView(), multipleStatusBean);
+    }
+
+    private void showTypeView(int type, Boolean remainDataView) {
+        final MultipleStatusBean multipleStatusBean = mMultipleStatusMap.get(type);
+        if (multipleStatusBean == null) {
+            return;
+        }
+        showTypeViewContent(remainDataView, multipleStatusBean);
+    }
+
+    private void showTypeViewContent(boolean remainDataView, @NonNull MultipleStatusBean multipleStatusBean) {
+        hideTypeViews(remainDataView);
+        View view = multipleStatusBean.getView();
+        if (view == null) {
+            view = mOnGenerateStatusViewCallback.onAddChildView(multipleStatusBean.getLayoutId(), mTopGap);
+            view.setTag(multipleStatusBean.getViewTag());
+            final View.OnClickListener listener = multipleStatusBean.getClickListener();
+            final int[] clickViewIds = multipleStatusBean.getClickViewIds();
+            if (listener != null || !Utils.isEmpty(clickViewIds)) {
+                for (int i = 0; i < clickViewIds.length; i++) {
+                    view.findViewById(clickViewIds[i]).setOnClickListener(listener);
+                }
+            }
+            multipleStatusBean.setParent(mRootView);
+            multipleStatusBean.setView(view);
+        }
+        view.setVisibility(View.VISIBLE);
+    }
+
+
+    private void hideTypeViews(boolean remainDataView) {
+        if (!remainDataView) {
+            displayDataView(false);
+        }
+        for (int i = 0; i < mMultipleStatusMap.size(); i++) {
+            MultipleStatusBean multipleStatusBean = mMultipleStatusMap.valueAt(i);
+            if (multipleStatusBean == null) {
+                continue;
+            }
+            System.out.println("===>>>hideTypeViews, multipleStatusBean: "+multipleStatusBean);
+            View view = multipleStatusBean.getView();
+            if (view == null) {
+                continue;
+            }
+            System.out.println("===>>>hideTypeViews, view: "+view);
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public View getTypeView(int type) {
+        final MultipleStatusBean multipleStatusBean = mMultipleStatusMap.get(type);
+        return multipleStatusBean == null? null:multipleStatusBean.getView();
+    }
 }

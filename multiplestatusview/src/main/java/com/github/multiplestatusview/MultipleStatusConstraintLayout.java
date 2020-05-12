@@ -50,6 +50,13 @@ public class MultipleStatusConstraintLayout extends ConstraintLayout implements 
     }
 
     @Override
+    public void setOnTypeViewClickListener(int type, @NonNull OnClickListener listener, int... viewIds) {
+        if (mMultipleStatusDelegate != null) {
+            mMultipleStatusDelegate.setOnTypeViewClickListener(type, listener, viewIds);
+        }
+    }
+
+    @Override
     public void showDataView() {
         if (mMultipleStatusDelegate != null) {
             mMultipleStatusDelegate.showDataView();
@@ -92,7 +99,7 @@ public class MultipleStatusConstraintLayout extends ConstraintLayout implements 
     }
 
     @Override
-    public void setOnErrorViewClickListener (int viewId, @NonNull OnClickListener listener) {
+    public void setOnErrorViewClickListener(int viewId, @NonNull OnClickListener listener) {
         if (mMultipleStatusDelegate != null) {
             mMultipleStatusDelegate.setOnErrorViewClickListener(viewId, listener);
         }
@@ -106,7 +113,7 @@ public class MultipleStatusConstraintLayout extends ConstraintLayout implements 
     }
 
     @Override
-    public void setOnEmptyViewClickListener (int viewId, @NonNull View.OnClickListener listener) {
+    public void setOnEmptyViewClickListener(int viewId, @NonNull View.OnClickListener listener) {
         if (mMultipleStatusDelegate != null) {
             mMultipleStatusDelegate.setOnEmptyViewClickListener(viewId, listener);
         }
@@ -120,7 +127,7 @@ public class MultipleStatusConstraintLayout extends ConstraintLayout implements 
     }
 
     @Override
-    public void setOnNotLoginViewClickListener (int viewId, @NonNull View.OnClickListener listener) {
+    public void setOnNotLoginViewClickListener(int viewId, @NonNull View.OnClickListener listener) {
         if (mMultipleStatusDelegate != null) {
             mMultipleStatusDelegate.setOnNotLoginViewClickListener(viewId, listener);
         }
@@ -131,5 +138,38 @@ public class MultipleStatusConstraintLayout extends ConstraintLayout implements 
         if (mMultipleStatusDelegate != null) {
             mMultipleStatusDelegate.setOnNotLoginViewClickListener(listener, viewIds);
         }
+    }
+
+    @Override
+    public void addCustomTypeView(int type, int layoutId) {
+        if (mMultipleStatusDelegate != null) {
+            mMultipleStatusDelegate.addCustomTypeView(type, layoutId);
+        }
+    }
+
+    @Override
+    public void addCustomTypeView(int type, int layoutId, boolean remainDataView) {
+        if (mMultipleStatusDelegate != null) {
+            mMultipleStatusDelegate.addCustomTypeView(type, layoutId, remainDataView);
+        }
+    }
+
+    @Override
+    public void showCustomTypeView(int type) {
+        if (mMultipleStatusDelegate != null) {
+            mMultipleStatusDelegate.showCustomTypeView(type);
+        }
+    }
+
+    @Override
+    public void showWithAddCustomTypeView(int type, int layoutId) {
+        if (mMultipleStatusDelegate != null) {
+            mMultipleStatusDelegate.showWithAddCustomTypeView(type, layoutId);
+        }
+    }
+
+    @Override
+    public View getTypeView(int type) {
+        return mMultipleStatusDelegate == null ? null : mMultipleStatusDelegate.getTypeView(type);
     }
 }
